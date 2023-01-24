@@ -11,11 +11,25 @@ echo "2 = Script"
 echo "3 = Order"
 echo "4 = Notification"
 read type
+if [[ $type -eq 1 ]]
+then
 echo "Enter theme ID of theme that you're working on"
 read themeid
 echo "Enter themekit password"
 read themekit
-
+elif [[ $type -eq 2 ]]
+then
+echo "Enter script ID of the script that you're working on"
+read scriptid
+elif [[ $type -eq 3 ]]
+then
+echo "Enter ID of the order printer template that you're working on"
+read otid
+elif [[ $type -eq 4 ]]
+then
+echo "Enter handle of the notification template that you're working on"
+read notificationid
+fi
 task="${${task}// /-}"
 echo  ${subdomain} ${task} ${themeid}
 
@@ -53,17 +67,23 @@ theme download
 elif [[ $type -eq 2 ]]
 then
   mkdir -p ${subdomain}/scripts
+  echo 'made scripts dir'
   cd ${subdomain}/scripts
+  echo 'switched to scripts dir'
+  touch ${scriptid}.rb
+  echo 'made file'
   echo 'option 2'
 elif [[ $type -eq 3 ]]
 then
   mkdir -p ${subdomain}/orders
   cd ${subdomain}/orders
+  touch ${otid}.liquid
   echo 'option 3'
 elif [[ $type -eq 4 ]]
 then
   mkdir -p ${subdomain}/notifications
   cd ${subdomain}/notifications
+  touch ${notificationid}.liquid
   echo 'option 4'
 else
   echo "Unexpected input" $type
@@ -72,11 +92,16 @@ fi
 git add .
 git commit -m "${subdomain} ${task} init"
 git push origin ${subdomain}-${task}-init
-open https://github.com/aisling-krewer/sample-merchant-repo/pull/new/${subdomain}-${task}-init
+open -a "Google Chrome" https://github.com/aisling-krewer/sample-merchant-repo/pull/new/${subdomain}-${task}-init
 
 echo "Press enter to when the PR is merged."
 read cont
 git checkout master && git pull origin master
 git checkout -b ${subdomain}-${task}
-theme open
-theme watch
+code .
+
+if [[ $type -eq 1 ]]
+then
+  theme open
+  theme watch
+fi
