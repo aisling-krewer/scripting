@@ -1,30 +1,82 @@
 #! /usr/bin/env zsh
 source ~/.zshrc
+regex='^[a-zA-Z0-9-]+$'
 
 echo "Enter subdomain of store you're working on"
-read subdomain
+#Validate subdomain
+while true; do
+  read subdomain
+  if [[ $subdomain =~ $regex ]]; then
+    break
+  else
+    echo "Invalid subdomain, please try again"
+  fi
+done
+#read subdomain
 echo "What are you doing?"
-read task
+#validate task, allowing letters, numbers, spaces, and dashes
+while true; do
+  read task
+  if [[ $task =~ $regex ]]; then
+    break
+  else
+    echo "Invalid task, please try again"
+  fi
+done
+
+#read task
+numbers='^[0-9]+$'
 echo "What type of customisation are you working on?"
 echo "1 = Theme"
 echo "2 = Script"
 echo "3 = Order"
 echo "4 = Notification"
-read type
+#read type
+
+while true; do
+  read type
+  if [[ $type =~ $numbers ]]; then
+    break
+  else
+    echo "Invalid type, please try again"
+  fi
+done
+
 if [[ $type -eq 1 ]]
 then
 echo "Enter theme ID of theme that you're working on"
-read themeid
+while true; do
+  read themeid
+  if [[ $type =~ $numbers ]]; then
+    break
+  else
+    echo "Invalid id, please try again"
+  fi
+done
 echo "Enter themekit password"
 read themekit
 elif [[ $type -eq 2 ]]
 then
 echo "Enter script ID of the script that you're working on"
-read scriptid
+while true; do
+  read scriptid
+  if [[ $type =~ $numbers ]]; then
+    break
+  else
+    echo "Invalid id, please try again"
+  fi
+done
 elif [[ $type -eq 3 ]]
 then
 echo "Enter ID of the order printer template that you're working on"
-read otid
+while true; do
+  read otid
+  if [[ $type =~ $numbers ]]; then
+    break
+  else
+    echo "Invalid id, please try again"
+  fi
+done
 elif [[ $type -eq 4 ]]
 then
 echo "Enter handle of the notification template that you're working on"
@@ -33,11 +85,16 @@ fi
 task="${${task}// /-}"
 echo  ${subdomain} ${task} ${themeid}
 
+echo "Switching directories"
 cd ~/Documents/sample-merchant-repo
+
+echo "Creating new branch ${subdomain}-${task}-init"
 
 git checkout master && git pull origin master
 git checkout -b ${subdomain}-${task}-init
+#TODO: check for errors, existing branches, etc and handle them
 
+#Implement error handling below too
 if [[ $type -eq 1 ]]
 then
 mkdir -p ${subdomain}/${themeid}
@@ -60,6 +117,7 @@ development:
       - "*.mp4"
 CON
 
+echo "Opening theme in VSCode"
 code .
 
 theme download
@@ -67,11 +125,8 @@ theme download
 elif [[ $type -eq 2 ]]
 then
   mkdir -p ${subdomain}/scripts
-  echo 'made scripts dir'
   cd ${subdomain}/scripts
-  echo 'switched to scripts dir'
   touch ${scriptid}.rb
-  echo 'made file'
   echo 'option 2'
 elif [[ $type -eq 3 ]]
 then
@@ -92,16 +147,14 @@ fi
 git add .
 git commit -m "${subdomain} ${task} init"
 git push origin ${subdomain}-${task}-init
-open -a "Google Chrome" https://github.com/aisling-krewer/sample-merchant-repo/pull/new/${subdomain}-${task}-init
+open https://github.com/aisling-krewer/sample-merchant-repo/pull/new/${subdomain}-${task}-init
 
 echo "Press enter to when the PR is merged."
 read cont
 git checkout master && git pull origin master
 git checkout -b ${subdomain}-${task}
-code .
 
 if [[ $type -eq 1 ]]
-then
-  theme open
-  theme watch
+theme open
+theme watch
 fi
