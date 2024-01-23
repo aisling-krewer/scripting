@@ -4,6 +4,15 @@
 
 The Plus Utility Belt (PUB) is a tool used by the Plus Front End Development (PFED) team to streamline how we make adjustments to themes, notifications and scripts. With the upcoming deprecation of ThemeKit, and the level of maintenance the PUB currently requires, I've been working on an alternative implementation that will use Shopify's CLI instead, and be overall easier to maintain.
 
+> [!CAUTION]
+> This is an experiment under development, and this document is subject to regular revision and updates.
+>
+> This file also has a sample merchant repo, instead of the real repo. Feel free to update references to the repo to your own test repos, but please avoid interacting with the real thing!
+
+> [!WARNING] 
+> The code includes references to scripts despite their upcoming deprecation. This will likely be removed in future updates.
+
+
 ### Prerequisites
 
 You should already have the following if you used the PFED Bootstrapper to set up your system as of 22/12/23.
@@ -12,7 +21,6 @@ You should already have the following if you used the PFED Bootstrapper to set u
 - The script assumes that you have a `.zshrc` file in your home directory (`~/.zshrc`) that sets up necessary environment variables.
 
 You will also need to install the Shopify CLI. In the future this may be added to the bootstrapper, but for now, you may need to install this manually. [The instructions are available in the Help Docs here!](https://shopify.dev/docs/themes/tools/cli/install)
-
 
 ### Usage
 
@@ -31,7 +39,6 @@ The code performs the following steps:
 2. Prompts the user to enter the task they're working on.
 
 3. Prompts the user to select the type of customization they're working on.
-[!NOTE] The code includes scripts despite their upcoming deprecation. This may be removed in future updates.
 
 4. Prompts the user for input based on the value of the variable 'type':
    - If 'type' is equal to 1, the user is asked to enter a theme ID.
@@ -81,6 +88,3 @@ The code performs the following steps:
 22. Creates a new branch
 
 23. Serves the theme if the customization type is a theme.
-
-### Note
-This is an experiment under development, and this document is subject to regular revision and updates. 
