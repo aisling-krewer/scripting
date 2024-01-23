@@ -9,6 +9,7 @@ regex='^[a-zA-Z0-9-]+$'
 numbers='^[0-9]+$'
 
 # Prompt user to enter the subdomain of the store they're working on
+# TODO: Handle full .myshopify URLs as well as subdomains
 echo "Enter subdomain of store you're working on"
 while true; do
   read subdomain
@@ -98,7 +99,7 @@ cd ~/Documents/sample-merchant-repo
 
 # Create a new branch for the customization
 echo "Creating new branch ${subdomain}-${task}-init"
-git checkout master && git pull origin master
+git checkout main && git pull origin main
 git checkout -b ${subdomain}-${task}-init
 
 # Handle different customization types
@@ -108,6 +109,7 @@ if [[ $type -eq 1 ]]; then
   cd ${subdomain}/${themeid}
   echo 'option 1'
   # Generate the shopify.theme.toml file
+  #TODO: Make enviroment unique to update in question
   tee -a shopify.theme.toml << CON
 [environments.env${subdomain}${themeid}]
   password = "${shopify_cli}"
@@ -131,7 +133,7 @@ CON
 
   # Pull the theme from Shopify
   echo "Pulling theme from Shopify"
-  shopify theme pull -e env
+  shopify theme pull -e env${subdomain}${themeid}
 
 elif [[ $type -eq 2 ]]; then
   # Create the necessary directories and files for a script customization
@@ -170,11 +172,16 @@ open https://github.com/aisling-krewer/sample-merchant-repo/pull/new/${subdomain
 echo "Press enter when the PR is merged."
 read cont
 
-# Switch back to the master branch
-git checkout master && git pull origin master
+# Switch back to the main branch
+echo "Switching to the main branch and pulling the latest changes"
+git checkout main && git pull origin main
+echo "Creating new branch ${subdomain}-${task}"
 git checkout -b ${subdomain}-${task}
 
 # Serve the theme if the customization type is a theme
 if [[ $type -eq 1 ]]; then
-  shopify theme dev -e env
+  echo "Serving theme"
+  shopify theme dev -e env${subdomain}${themeid}
+  echo "Press enter when you're done serving the theme"
+  read cont
 fi
